@@ -1,12 +1,5 @@
-"""
-Demonstration of Scaled Dot-Product Attention.
-
-This script shows how the attention mechanism works with sample data,
-including both standard attention and causal (masked) attention.
-"""
-
 import numpy as np
-from scaled_attention import (
+from .scaled_attention import (
     scaled_dot_product_attention,
     create_causal_mask,
     create_padding_mask
@@ -14,14 +7,12 @@ from scaled_attention import (
 
 
 def print_section(title):
-    """Print a formatted section header."""
     print("\n" + "=" * 70)
     print(f"  {title}")
     print("=" * 70)
 
 
 def print_matrix(name, matrix, precision=4):
-    """Print a matrix with a label."""
     print(f"\n{name}:")
     if matrix.ndim == 3:
         for i, mat in enumerate(matrix):
@@ -32,24 +23,20 @@ def print_matrix(name, matrix, precision=4):
 
 
 def print_2d_matrix(matrix, precision=4, indent=""):
-    """Print a 2D matrix with formatting."""
     for row in matrix:
         formatted_row = [f"{val:>{precision+3}.{precision}f}" for val in row]
         print(indent + " ".join(formatted_row))
 
 
 def demo_basic_attention():
-    """Demonstrate basic attention without masking."""
     print_section("Demo 1: Basic Scaled Dot-Product Attention")
     
-    # Set random seed for reproducibility
     np.random.seed(42)
     
-    # Define dimensions
     batch_size = 2
     seq_len = 4
-    d_k = 8  # Key/Query dimension
-    d_v = 8  # Value dimension
+    d_k = 8
+    d_v = 8
     
     print(f"\nConfiguration:")
     print(f"  Batch size: {batch_size}")
@@ -57,7 +44,6 @@ def demo_basic_attention():
     print(f"  Key/Query dimension (d_k): {d_k}")
     print(f"  Value dimension (d_v): {d_v}")
     
-    # Create random Q, K, V matrices
     Q = np.random.randn(batch_size, seq_len, d_k)
     K = np.random.randn(batch_size, seq_len, d_k)
     V = np.random.randn(batch_size, seq_len, d_v)
@@ -67,17 +53,14 @@ def demo_basic_attention():
     print(f"  K (Key):   {K.shape}")
     print(f"  V (Value): {V.shape}")
     
-    # Compute attention
     output, attention_weights = scaled_dot_product_attention(Q, K, V)
     
     print(f"\nOutput shapes:")
     print(f"  Output:            {output.shape}")
     print(f"  Attention weights: {attention_weights.shape}")
     
-    # Show attention weights for first batch
     print_matrix("Attention Weights (Batch 0)", attention_weights[0])
     
-    # Verify that attention weights sum to 1
     weight_sums = attention_weights.sum(axis=-1)
     print(f"\nAttention weight sums (should all be ~1.0):")
     print(f"  {weight_sums[0]}")
@@ -88,13 +71,10 @@ def demo_basic_attention():
 
 
 def demo_causal_attention():
-    """Demonstrate causal (masked) attention for autoregressive models."""
     print_section("Demo 2: Causal Attention (with Masking)")
     
-    # Set random seed
     np.random.seed(42)
     
-    # Smaller example for clarity
     batch_size = 1
     seq_len = 5
     d_k = 4
@@ -105,19 +85,16 @@ def demo_causal_attention():
     print(f"  Sequence length: {seq_len}")
     print(f"  Dimensions: d_k={d_k}, d_v={d_v}")
     
-    # Create Q, K, V
     Q = np.random.randn(batch_size, seq_len, d_k)
     K = np.random.randn(batch_size, seq_len, d_k)
     V = np.random.randn(batch_size, seq_len, d_v)
     
-    # Create causal mask (prevents attending to future positions)
     mask = create_causal_mask(seq_len)
     
     print("\nCausal Mask (True = masked, False = visible):")
     print("  (Each position can only attend to itself and previous positions)")
     print_2d_matrix(mask.astype(int), precision=0, indent="  ")
     
-    # Compute attention with mask
     output, attention_weights = scaled_dot_product_attention(Q, K, V, mask=mask)
     
     print_matrix("Attention Weights (with causal mask)", attention_weights[0])
@@ -131,7 +108,6 @@ def demo_causal_attention():
 
 
 def demo_attention_interpretation():
-    """Demonstrate how attention works with interpretable example."""
     print_section("Demo 3: Interpretable Attention Example")
     
     print("\nScenario: Simple sequence with clear patterns")
@@ -142,25 +118,22 @@ def demo_attention_interpretation():
     d_k = 2
     d_v = 2
     
-    # Create simple, interpretable matrices
-    # Q and K are designed so position 0 attends strongly to position 1
-    Q = np.array([[[1.0, 0.0],   # Position 0: looking for [1, 0]
-                   [0.0, 1.0],   # Position 1: looking for [0, 1]
-                   [1.0, 1.0]]]) # Position 2: looking for [1, 1]
+    Q = np.array([[[1.0, 0.0],
+                   [0.0, 1.0],
+                   [1.0, 1.0]]])
     
-    K = np.array([[[0.0, 1.0],   # Position 0: key [0, 1]
-                   [1.0, 0.0],   # Position 1: key [1, 0]
-                   [1.0, 1.0]]]) # Position 2: key [1, 1]
+    K = np.array([[[0.0, 1.0],
+                   [1.0, 0.0],
+                   [1.0, 1.0]]])
     
-    V = np.array([[[1.0, 0.0],   # Position 0: value [1, 0]
-                   [0.0, 1.0],   # Position 1: value [0, 1]
-                   [0.5, 0.5]]]) # Position 2: value [0.5, 0.5]
+    V = np.array([[[1.0, 0.0],
+                   [0.0, 1.0],
+                   [0.5, 0.5]]])
     
     print_matrix("Query (Q)", Q[0], precision=1)
     print_matrix("Key (K)", K[0], precision=1)
     print_matrix("Value (V)", V[0], precision=1)
     
-    # Compute attention
     output, attention_weights = scaled_dot_product_attention(Q, K, V)
     
     print_matrix("Attention Weights", attention_weights[0])
@@ -173,13 +146,11 @@ def demo_attention_interpretation():
 
 
 def main():
-    """Run all demonstrations."""
     print("\n" + "=" * 70)
     print("  SCALED DOT-PRODUCT ATTENTION DEMONSTRATION")
     print("  Implementation using only NumPy")
     print("=" * 70)
     
-    # Run demonstrations
     demo_basic_attention()
     demo_causal_attention()
     demo_attention_interpretation()
