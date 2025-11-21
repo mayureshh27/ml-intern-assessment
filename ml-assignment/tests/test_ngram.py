@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 """
 Comprehensive test suite for the Trigram Language Model.
 
@@ -12,6 +13,12 @@ from src.ngram_model import TrigramModel
 
 def test_fit_and_generate():
     """Test basic fit and generate functionality."""
+=======
+import pytest
+from src.ngram_model import TrigramModel
+
+def test_fit_and_generate():
+>>>>>>> cfff0cadc0242e1f10eec701b355ee9b26226a11
     model = TrigramModel()
     text = "I am a test sentence. This is another test sentence."
     model.fit(text)
@@ -19,18 +26,26 @@ def test_fit_and_generate():
     assert isinstance(generated_text, str)
     assert len(generated_text.split()) > 0
 
+<<<<<<< HEAD
 
 def test_empty_text():
     """Test that empty text is handled gracefully."""
+=======
+def test_empty_text():
+>>>>>>> cfff0cadc0242e1f10eec701b355ee9b26226a11
     model = TrigramModel()
     text = ""
     model.fit(text)
     generated_text = model.generate()
     assert generated_text == ""
 
+<<<<<<< HEAD
 
 def test_short_text():
     """Test that short text is handled correctly."""
+=======
+def test_short_text():
+>>>>>>> cfff0cadc0242e1f10eec701b355ee9b26226a11
     model = TrigramModel()
     text = "I am."
     model.fit(text)
@@ -38,6 +53,7 @@ def test_short_text():
     assert isinstance(generated_text, str)
 
 
+<<<<<<< HEAD
 def test_trigram_counting():
     """Test that trigrams are counted correctly."""
     model = TrigramModel()
@@ -191,3 +207,5 @@ def test_large_corpus_training():
 
 
 
+=======
+>>>>>>> cfff0cadc0242e1f10eec701b355ee9b26226a11
